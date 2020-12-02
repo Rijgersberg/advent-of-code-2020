@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import re
 
-from aoc import fetch_input
+from aoc import get_input
 
 
 @dataclass
@@ -13,7 +13,7 @@ class Entry:
 
 
 database = []
-for line in fetch_input(day=2):
+for line in get_input(day=2):
     pol_min, pol_max, letter, pw = re.fullmatch(r'(\d+)-(\d+) (\w): (\w+)', line).groups()
     database.append(Entry(letter, int(pol_min), int(pol_max), pw))
 

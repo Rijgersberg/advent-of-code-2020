@@ -6,11 +6,4 @@ import re
 
 from aoc import get_input
 
-print(get_input(day=3))
-
-# 3-1
-
-
-
-
-# 3-2
+print(get_input(day=x))
