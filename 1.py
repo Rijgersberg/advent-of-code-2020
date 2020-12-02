@@ -1,8 +1,8 @@
 from itertools import combinations
 
+from aoc import fetch_input
 
-with open('input/1.txt') as f:
-    expenses = [int(l) for l in f.readlines()]
+expenses = [int(l) for l in fetch_input(day=1)]
 
 # 1-1
 for e1, e2 in combinations(expenses, 2):

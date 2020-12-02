@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import re
 
+from aoc import fetch_input
+
 
 @dataclass
 class Entry:
@@ -11,10 +13,9 @@ class Entry:
 
 
 database = []
-with open('input/2.txt') as f:
-    for line in f.read().splitlines():
-        pol_min, pol_max, letter, pw = re.fullmatch(r'(\d+)-(\d+) (\w): (\w+)', line).groups()
-        database.append(Entry(letter, int(pol_min), int(pol_max), pw))
+for line in fetch_input(day=2):
+    pol_min, pol_max, letter, pw = re.fullmatch(r'(\d+)-(\d+) (\w): (\w+)', line).groups()
+    database.append(Entry(letter, int(pol_min), int(pol_max), pw))
 
 # 2-1
 print(sum(entry.pol_min <= entry.password.count(entry.letter) <= entry.pol_max
