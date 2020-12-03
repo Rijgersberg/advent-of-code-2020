@@ -1,16 +1,32 @@
-from collections import defaultdict, Counter, deque
-from dataclasses import dataclass
-import heapq
-from itertools import combinations, combinations_with_replacement, permutations, product
-import re
+import math
 
 from aoc import get_input
 
-print(get_input(day=3))
+forest = get_input(day=3)
 
 # 3-1
 
+dx = 3
+dy = 1
 
+N = 0
+for y, row in enumerate(forest):
+    current_pos = row[y * dx % len(row)]
 
+    if current_pos == '#':
+        N += 1
+print(N)
 
 # 3-2
+N_trees = []
+for dx, dy in [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]:
+    N_trees.append(0)
+    for n, y in enumerate(range(0, len(forest), dy)):
+        row = forest[y]
+        current_pos = row[n * dx % len(row)]
+
+        if current_pos == '#':
+            N_trees[-1] += 1
+
+print(math.prod(N_trees))
+
