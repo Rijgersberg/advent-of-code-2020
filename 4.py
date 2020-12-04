@@ -54,8 +54,7 @@ class Passport:
             assert re.fullmatch(r'#([0-9a-f]){6}', self.hcl, re.IGNORECASE) is not None
             assert self.ecl in 'amb blu brn gry grn hzl oth'.split()
 
-            assert len(self.pid) == 9
-            assert self.pid.isnumeric()
+            assert re.fullmatch(r'\d{9}', self.pid) is not None
 
             return True
         except AssertionError:
