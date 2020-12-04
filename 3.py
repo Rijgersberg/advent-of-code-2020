@@ -5,7 +5,6 @@ from aoc import get_input
 forest = get_input(day=3)
 
 # 3-1
-
 dx = 3
 dy = 1
 
@@ -30,3 +29,12 @@ for dx, dy in [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]:
 
 print(math.prod(N_trees))
 
+
+# 3-2 oneliner
+print(
+    math.prod(
+        sum(row[n * dx % len(row)] == '#'
+            for n, row in enumerate(forest[::dy]))
+        for dx, dy in [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
+    )
+)
