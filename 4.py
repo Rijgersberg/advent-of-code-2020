@@ -5,7 +5,7 @@ from aoc import get_input
 
 class Passport:
     def __init__(self, record):
-        record = {kv.split(':')[0]: kv.split(':')[1] for kv in record.split()}
+        record = dict(kv.split(':') for kv in record.split())
         self.record = record
 
         self.byr = int(record['byr']) if 'byr' in record else None
