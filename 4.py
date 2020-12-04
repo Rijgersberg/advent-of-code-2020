@@ -1,3 +1,4 @@
+import re
 import string
 
 from aoc import get_input
@@ -15,14 +16,8 @@ class Passport:
         self.hgt = None
         self.hgt_unit = None
         if 'hgt' in record:
-            if record['hgt'].endswith(('cm', 'in')):
-                self.hgt_unit = record['hgt'][-2:]
-
-                measurement = record['hgt'][:-2]
-                if measurement.isnumeric():
-                    self.hgt = int(measurement)
-            elif record['hgt'].isnumeric():
-                self.hgt = record['hgt']
+            height_str, self.hgt_unit = re.fullmatch(r'(\d+)(in|cm)?', record['hgt']).groups()
+            self.hgt = int(height_str)
 
         self.hcl = record['hcl'] if 'hcl' in record else None
         self.ecl = record['ecl'] if 'ecl' in record else None
@@ -56,11 +51,7 @@ class Passport:
             elif self.hgt_unit == 'in':
                 assert 59 <= self.hgt <= 76
 
-            # hair color
-            assert len(self.hcl) == 7
-            assert self.hcl.startswith('#')
-            assert all(c in string.hexdigits for c in self.hcl[1:])
-
+            assert re.fullmatch(r'#([0-9a-f]){6}', self.hcl, re.IGNORECASE) is not None
             assert self.ecl in 'amb blu brn gry grn hzl oth'.split()
 
             assert len(self.pid) == 9
