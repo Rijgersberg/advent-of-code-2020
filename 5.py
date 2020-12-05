@@ -1,14 +1,7 @@
-from collections import defaultdict, Counter, deque
-from dataclasses import dataclass
-import heapq
-from itertools import combinations, combinations_with_replacement, permutations, product
-import re
-
 from aoc import get_input
 
-seat_strings = (get_input(day=5))
+seat_strings = get_input(day=5)
 
-# 5-1
 mapping = {'F': '0', 'B': '1',
            'L': '0', 'R': '1'}
 
@@ -24,6 +17,8 @@ assert seatid('FFFBBBFRRR') == 119
 assert seatid('BBFFBBFRLL') == 820
 
 seats = {seatid(s) for s in seat_strings}
+
+# 5-1
 print(max(seats))
 
 # 5-2
