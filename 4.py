@@ -1,5 +1,4 @@
 import re
-import string
 
 from aoc import get_input
 
