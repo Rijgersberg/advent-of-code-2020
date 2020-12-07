@@ -1,12 +1,10 @@
-from collections import defaultdict, Counter, deque
-from dataclasses import dataclass
-import heapq
-from itertools import combinations, combinations_with_replacement, permutations, product
+from collections import defaultdict
 import re
 
 from aoc import get_input
 
 rules = get_input(day=7)
+
 
 def clean(bagstring):
     number, modifier, color, bag = re.fullmatch(r'(\d+) ([a-z]+) ([a-z]+) (bag)s?', bagstring).groups()
@@ -20,7 +18,6 @@ for rule in rules:
     outer = outer[:-5]
 
     for inner in inners.split(','):
-        print(inner)
         inner = inner.strip()
         if inner[-1] == '.':
             inner = inner[:-1]
@@ -30,8 +27,8 @@ for rule in rules:
 
             fits_in[kind].add((number, outer))
             holds[outer].add((number, kind))
-
 print(fits_in)
+print(holds)
 
 
 # 7-1
@@ -47,7 +44,7 @@ print(len(can_contain('shiny gold')))
 
 # 7-2
 def n_required(color):
-    if color not in fits_in:
+    if color not in holds:
         return 1
     else:
         return 1 + sum(n * n_required(c) for n, c in holds[color])
