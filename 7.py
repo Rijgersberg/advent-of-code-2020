@@ -23,10 +23,10 @@ for rule in rules:
             inner = inner[:-1]
 
         if inner != 'no other bags':
-            number, kind = clean(inner)
+            number, inner = clean(inner)
 
-            fits_in[kind].add((number, outer))
-            holds[outer].add((number, kind))
+            fits_in[inner].add((number, outer))
+            holds[outer].add((number, inner))
 print(fits_in)
 print(holds)
 
@@ -36,8 +36,8 @@ def can_contain(color):
     if color not in fits_in:
         return {}
     else:
-        x = fits_in[color]
-        return set.union({v[1] for v in x}, *[can_contain(c) for n, c in fits_in[color]])
+        return set.union({c for n, c in fits_in[color]},
+                         *[can_contain(c) for n, c in fits_in[color]])
 
 print(len(can_contain('shiny gold')))
 
