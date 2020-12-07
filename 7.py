@@ -1,5 +1,7 @@
 from collections import defaultdict
 import re
+import time
+import functools
 
 from aoc import get_input
 
@@ -49,4 +51,17 @@ def n_required(color):
     else:
         return 1 + sum(n * n_required(c) for n, c in holds[color])
 
+@functools.lru_cache(10000)
+def n_required_mem(color):
+    if color not in holds:
+        return 1
+    else:
+        return 1 + sum(n * n_required(c) for n, c in holds[color])
+
+t0 = time.time()
 print(n_required('shiny gold') - 1)
+print(f'{time.time() - t0} seconds')
+
+t0 = time.time()
+print(n_required_mem('shiny gold') - 1)
+print(f'{time.time() - t0} seconds')
