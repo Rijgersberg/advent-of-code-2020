@@ -1,5 +1,3 @@
-import copy
-
 from aoc import get_input
 
 instructions = get_input(day=8)
@@ -46,8 +44,8 @@ mapping = {'nop': 'jmp',
 def perturbed(original):
     for i, (op, value) in enumerate(original):
         if op in mapping:
-            new = copy.deepcopy(original)
-            new[i] = mapping[op], value
+            new = original[:]
+            new[i] = (mapping[op], value)
             yield new
 
 for instructions in perturbed(parse(instructions)):
