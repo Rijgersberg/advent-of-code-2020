@@ -41,21 +41,17 @@ print(acc)
 
 
 # 8-2
-def perturbed_instructions(original):
-    for i, line in enumerate(original):
-        if line[0] == 'nop':
+mapping = {'nop': 'jmp',
+           'jmp': 'nop'}
+def perturbed(original):
+    for i, (op, value) in enumerate(original):
+        if op in mapping:
             new = copy.deepcopy(original)
-            new[i][0] = 'jmp'
-            yield new
-        elif line[0] == 'jmp':
-            new = copy.deepcopy(original)
-            new[i][0] = 'nop'
+            new[i] = mapping[op], value
             yield new
 
-
-for instructions in perturbed_instructions(parse(instructions)):
+for instructions in perturbed(parse(instructions)):
     i, acc = run(instructions)
-
     if i == len(instructions):
         print(acc)
         break
