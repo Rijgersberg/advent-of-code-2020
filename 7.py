@@ -20,9 +20,7 @@ for rule in rules:
     outer = outer[:-5]
 
     for inner in inners.split(','):
-        inner = inner.strip()
-        if inner[-1] == '.':
-            inner = inner[:-1]
+        inner = inner.strip().removesuffix('.')
 
         if inner != 'no other bags':
             number, inner = clean(inner)
