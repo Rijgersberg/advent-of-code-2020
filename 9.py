@@ -1,8 +1,5 @@
-from collections import defaultdict, Counter, deque
-from dataclasses import dataclass
-import heapq
-from itertools import combinations, combinations_with_replacement, permutations, product
-import re
+import time
+from itertools import accumulate, combinations
 
 from aoc import get_input
 
@@ -17,7 +14,8 @@ for i in range(N, len(code)):
         print(target)
         break
 
-# 9-2
+# 9-2 slow
+t0 = time.time()
 for i in range(len(code)):
     j = i + 1
     running_total = code[i]
@@ -27,3 +25,19 @@ for i in range(len(code)):
             print(i, j, min(code[i:j+1]) + max(code[i:j+1]))
             break
         j += 1
+print(f'{time.time() - t0} seconds')
+
+# 9-2 fast
+t0 = time.time()
+cumsum = list(accumulate(code))
+i, j = 0, 0
+while i < len(code) and j < len(code):
+    test_sum = cumsum[j] - cumsum[i]  # difference between entries in cumsum == sum over the range between the entries
+    if test_sum == target:
+        print(i, j, min(code[i:j + 1]) + max(code[i:j + 1]))
+        break
+    elif test_sum < target:
+        j += 1
+    elif test_sum > target:
+        i += 1
+print(f'{time.time() - t0} seconds')
