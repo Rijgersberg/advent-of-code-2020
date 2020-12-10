@@ -1,4 +1,5 @@
 from collections import defaultdict, Counter
+
 import networkx as nx
 
 from aoc import get_input
@@ -23,9 +24,9 @@ for adapter in sequence:
             G.add_edge(adapter, adapter + i)
 
 n_paths = defaultdict(int)
-n_paths[device] = 1
-for n in list(nx.algorithms.dag.topological_sort(G))[::-1]:
-    for parent, _ in G.in_edges(n):
-        n_paths[parent] += n_paths[n]
+n_paths[outlet] = 1
+for n in nx.algorithms.dag.topological_sort(G):
+    for _, child in G.out_edges(n):
+        n_paths[child] += n_paths[n]
 
-print(n_paths[outlet])
+print(n_paths[device])
