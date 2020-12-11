@@ -1,9 +1,3 @@
-from collections import defaultdict, Counter, deque
-from dataclasses import dataclass
-import heapq
-from itertools import combinations, combinations_with_replacement, permutations, product
-import re
-
 import copy
 
 from aoc import get_input
@@ -12,56 +6,59 @@ from aoc import get_input
 game_str = get_input(day=11)
 N, M = len(game_str[0]), len(game_str)
 
-game = {x: [None] * M for x in range(N)}
+game = {x: {} for x in range(N)}
 for y, line in enumerate(game_str):
     for x, c in enumerate(line):
         game[x][y] = c
 
 original_game = copy.deepcopy(game)
+DIRECTIONS = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+
 
 # 11-1
-def neighbors(x, y):
-    for i in range(x-1, x+2):
-        for j in range(y-1, y+2):
-            if not (i, j) == (x, y) and 0 <= i < N and 0 <= j < M:
-                yield i, j
+def neighbors(x, y, way='close'):
+    if way == 'close':
+        yield from ((x + dx, y + dy) for dx, dy in DIRECTIONS
+                    if 0 <= x + dx < N and 0 <= y + dy < M)
+    elif way == 'visible':
+        yield from visible_neighbors[(x, y)]
 
-def update(old_game):
+
+def step(old_game, threshold, way):
     game = copy.deepcopy(old_game)
     for x in range(N):
         for y in range(M):
-            seat = game[x][y]
+            seat = old_game[x][y]
             if seat != '.':
-                adj_seats = sum(old_game[i][j] == '#' for i, j in neighbors(x, y))
+                adj_seats = sum(old_game[i][j] == '#' for i, j in neighbors(x, y, way))
                 if seat == 'L':
                     if adj_seats == 0:
                         game[x][y] = '#'
                 elif seat == '#':
-                    if adj_seats >= 4:
+                    if adj_seats >= threshold:
                         game[x][y] = 'L'
     return game
 
-t = 0
-while True:
-    t += 1
-    new_game = update(copy.deepcopy(game))
-    if new_game == game:
-        break
-    game = new_game
 
-print(t)
-print(sum(sum([c == '#' for c in row]) for row in game.values()))
+def play(game, threshold, way):
+    t = 0
+    while True:
+        t += 1
+        new_game = step(copy.deepcopy(game), threshold, way)
+        if new_game == game:
+            return t, sum(sum([c == '#' for c in row.values()])
+                          for row in game.values())
+        game = new_game
 
 
-# 11-2
-def search(x, y, dir, game):
+def find_first_visible(x, y, dir, game):
     new_x, new_y = x + dir[0], y + dir[1]
     if 0 <= new_x < N and 0 <= new_y < M:
         c = game[new_x][new_y]
         if c in ['L', '#']:
             return new_x, new_y
         else:
-            return search(new_x, new_y, dir, game)
+            return find_first_visible(new_x, new_y, dir, game)
     else:
         return None
 
@@ -69,41 +66,20 @@ def make_visible_neighbors(game):
     neighbor_lookup = {}
     for x in range(N):
         for y in range(M):
-            directions = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
             neighbors = []
-            for dir in directions:
-                neighbor = search(x, y, dir, game)
+            for dir in DIRECTIONS:
+                neighbor = find_first_visible(x, y, dir, game)
                 if neighbor is not None:
                     neighbors.append(neighbor)
             neighbor_lookup[(x, y)] = neighbors
     return neighbor_lookup
 
-def update(old_game):
-    game = copy.deepcopy(old_game)
-    for x in range(N):
-        for y in range(M):
-            seat = game[x][y]
-            if seat != '.':
-                adj_seats = sum(old_game[i][j] == '#' for i, j in visible_neighbors[(x, y)])
-                if seat == 'L':
-                    if adj_seats == 0:
-                        game[x][y] = '#'
-                elif seat == '#':
-                    if adj_seats >= 5:
-                        game[x][y] = 'L'
-    return game
 
+# 11-1
+t, occupied = play(game, threshold=4, way='close')
+print(f'{t=}, {occupied=}')
+
+# 11-2
 visible_neighbors = make_visible_neighbors(original_game)
-game = original_game
-t = 0
-while True:
-    t += 1
-    new_game = update(copy.deepcopy(game))
-    if new_game == game:
-        break
-    game = new_game
-
-print(t)
-print(sum(sum([c == '#' for c in row]) for row in game.values()))
-
-
+t, occupied = play(original_game, threshold=5, way='visible')
+print(f'{t=}, {occupied=}')
