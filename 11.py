@@ -11,8 +11,9 @@ for y, line in enumerate(game_str):
     for x, c in enumerate(line):
         game[x][y] = c
 
-original_game = copy.deepcopy(game)
-DIRECTIONS = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+DIRECTIONS = ((-1, -1), (-1, 0), (-1, 1),
+              (0, -1), (0, 1),
+              (1, -1), (1, 0), (1, 1))
 
 
 # 11-1
@@ -44,7 +45,7 @@ def play(game, threshold, way):
     t = 0
     while True:
         t += 1
-        new_game = step(copy.deepcopy(game), threshold, way)
+        new_game = step(game, threshold, way)
         if new_game == game:
             return t, sum(sum([c == '#' for c in row.values()])
                           for row in game.values())
