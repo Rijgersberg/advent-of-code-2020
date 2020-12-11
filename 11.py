@@ -81,6 +81,6 @@ t, occupied = play(game, threshold=4, way='close')
 print(f'{t=}, {occupied=}')
 
 # 11-2
-visible_neighbors = make_visible_neighbors(original_game)
-t, occupied = play(original_game, threshold=5, way='visible')
+visible_neighbors = make_visible_neighbors(game)
+t, occupied = play(game, threshold=5, way='visible')
 print(f'{t=}, {occupied=}')
