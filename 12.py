@@ -1,21 +1,13 @@
-from collections import defaultdict, Counter, deque
-from dataclasses import dataclass
-import heapq
-from itertools import combinations, combinations_with_replacement, permutations, product
-import re
-from math import cos, sin, pi, sqrt
+from math import cos, sin, pi
 
 from aoc import get_input
-
 
 instructions = [(i[0], int(i[1:])) for i in get_input(day=12)]
 
 mappings = {'N': (0, 1),
             'S': (0, -1),
             'E': (1, 0),
-            'W': (-1, 0),
-            'L': 1,
-            'R': -1}
+            'W': (-1, 0)}
 
 def move(action, value, pos, direc):
     if action in 'NSEW':
@@ -39,7 +31,6 @@ pos = (0, 0)
 direc = 0
 for action, value in instructions:
     pos, direc = move(action, value, pos, direc)
-
 print(abs(pos[0]) + abs(pos[1]))
 
 # 12-2
