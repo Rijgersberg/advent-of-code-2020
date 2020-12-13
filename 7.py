@@ -54,7 +54,7 @@ def n_required_mem(color):
     if color not in holds:
         return 1
     else:
-        return 1 + sum(n * n_required(c) for n, c in holds[color])
+        return 1 + sum(n * n_required_mem(c) for n, c in holds[color])
 
 t0 = time.time()
 print(n_required('shiny gold') - 1)
