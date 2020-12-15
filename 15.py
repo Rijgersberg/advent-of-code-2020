@@ -4,12 +4,9 @@ def solve(input_, max_turn):
     prev = input_[-1]
     for i in range(len(numbers), max_turn - 1):
         if prev in numbers:
-            n_turns_apart = i - numbers[prev]
-            numbers[prev] = i
-            prev = n_turns_apart
+            numbers[prev], prev = i, i - numbers[prev]
         else:
-            numbers[prev] = i
-            prev = 0
+            numbers[prev], prev = i, 0
     return (i + 2, prev)
 
 puzzle_input = [18,8,0,5,4,1,20]
