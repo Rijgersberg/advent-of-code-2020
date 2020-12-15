@@ -3,10 +3,9 @@ def solve(input_, max_turn):
 
     numbers = {n: i for i, n in enumerate(rest)}
 
-    init = len(numbers)
-    i = init
+    i = len(numbers)
     prev = last
-    while i < max_turn - 1:
+    for i in range(len(numbers), max_turn - 1):
         if prev in numbers:
             n_turns_apart = i - numbers[prev]
             numbers[prev] = i
@@ -14,8 +13,7 @@ def solve(input_, max_turn):
         else:
             numbers[prev] = i
             prev = 0
-        i += 1
-    return (i + 1, prev)
+    return (i + 2, prev)
 
 puzzle_input = [18,8,0,5,4,1,20]
 assert solve([0, 3, 6], 10) == (10, 0)
