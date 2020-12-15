@@ -1,10 +1,7 @@
 def solve(input_, max_turn):
-    rest, last = input_[:-1], input_[-1]
+    numbers = {n: i for i, n in enumerate(input_[:-1])}
 
-    numbers = {n: i for i, n in enumerate(rest)}
-
-    i = len(numbers)
-    prev = last
+    prev = input_[-1]
     for i in range(len(numbers), max_turn - 1):
         if prev in numbers:
             n_turns_apart = i - numbers[prev]
