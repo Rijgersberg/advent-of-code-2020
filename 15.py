@@ -7,10 +7,11 @@ def solve(input_, max_turn):
             numbers[prev], prev = i, i - numbers[prev]
         else:
             numbers[prev], prev = i, 0
-    return (i + 2, prev)
+    return prev
+
+
+assert solve([0, 3, 6], 10) == 0
 
 puzzle_input = [18,8,0,5,4,1,20]
-assert solve([0, 3, 6], 10) == (10, 0)
-
 print(solve(puzzle_input, 2020))
 print(solve(puzzle_input, 30000000))
