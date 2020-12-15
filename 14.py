@@ -7,7 +7,6 @@ instructions = get_input(day=14)
 
 
 # 14-1
-mask = {}
 mem = {}
 for instruction in instructions:
     if instruction.startswith('mask'):
