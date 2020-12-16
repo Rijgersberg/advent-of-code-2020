@@ -1,5 +1,6 @@
 import math
 import re
+from collections import defaultdict
 
 from aoc import get_input
 
@@ -30,23 +31,23 @@ for ticket in nearby_tickets:
 print(error_rate)
 
 # 16-2
-rules_posses = {}
+# figure out which positions could be valid for each rule
+rules_posses = defaultdict(set)
 for rule, (r1, r2) in rules.items():
-    valid_posses = set(range(N))
     for pos in range(N):
-        for ticket in valid_tickets:
-            num = ticket[pos]
-            if not (int(num) in r1 or int(num) in r2):
-                valid_posses -= {pos}
-    rules_posses[rule] = valid_posses
+        if all(ticket[pos] in r1 or ticket[pos] in r2 for ticket in valid_tickets):
+            rules_posses[rule] |= {pos}
 
-unfixed_posses = rules_posses
+# solve unique solution iteratively starting with the rule that has only one possible solution
 final_posses = {}
+unfixed_posses = rules_posses
 while unfixed_posses:
-    shortest_rule, shortest_pos = [(k, v) for k, v in sorted(unfixed_posses.items(), key=lambda item: len(item[1]))][0]
-    assert len(shortest_pos) == 1
+    shortest_rule, [shortest_pos] = min(unfixed_posses.items(),
+                                        key=lambda x: len(x[1]))
 
-    final_posses[shortest_rule] = list(shortest_pos)[0]
-    unfixed_posses = {rule: posses - shortest_pos for rule, posses in unfixed_posses.items() if rule != shortest_rule}
+    final_posses[shortest_rule] = shortest_pos
+    unfixed_posses = {rule: posses - {shortest_pos} for rule, posses in
+                      unfixed_posses.items() if rule != shortest_rule}
 
-print(math.prod(my_ticket[pos] for rule, pos in final_posses.items() if rule.startswith('departure')))
+print(math.prod(my_ticket[pos] for rule, pos in final_posses.items()
+                if rule.startswith('departure')))
