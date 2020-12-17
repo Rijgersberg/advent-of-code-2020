@@ -20,14 +20,12 @@ for line in rules_str:
 
 # 16-1
 error_rate = 0
-valid_tickets = set()
+valid_tickets = set(nearby_tickets)
 for ticket in nearby_tickets:
     for num in ticket:
         if not any(num in r1 or num in r2 for r1, r2 in rules.values()):
             error_rate += num
-            break
-    else:
-        valid_tickets |= {ticket}
+            valid_tickets -= {ticket}
 print(error_rate)
 
 # 16-2
