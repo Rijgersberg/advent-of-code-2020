@@ -1,16 +1,7 @@
-from enum import Enum, auto
-
 from aoc import get_input
 
-equations = get_input(day=18)
-
-
-class Operator(Enum):
-    PLUS = auto()
-    MULT = auto()
 
 def find_close(string):
-    # print(f'calling find_close on "{string}"')
     level = 0
 
     for i, c in enumerate(string):
@@ -25,44 +16,39 @@ def find_close(string):
 
 
 def parse(equation):
+    equation = equation.replace(' ', '')
     ans = 0
-    op = Operator.PLUS
+    op = '+'
 
     pos = 0
-    # print(f'parsing "{equation}"')
     while pos < len(equation):
         c = equation[pos]
-        # print(f'{pos=}, c="{c}"')
 
         if c == '(':
             close = pos + find_close(equation[pos:])
-            c = str(parse(equation[pos+1:close]))
+            c = str(parse(equation[pos+1:close]))  # recursion
             pos = close
         elif c == ')':
             raise ValueError
 
         if c.isnumeric():
-            c = int(c)
-            if op == Operator.PLUS:
-                ans += c
+            if op == '+':
+                ans += int(c)
                 op = None
-            elif op == Operator.MULT:
-                ans *= c
+            elif op == '*':
+                ans *= int(c)
                 op = None
             else:
-                raise ValueError(f'Encountered a number {c=} at {pos=} without having a value operator set')
-        elif c == '+':
-            op = Operator.PLUS
-        elif c == '*':
-            op = Operator.MULT
-        elif c == ' ':
-            pass
+                raise ValueError(f'Encountered a number {c=} at {pos=} without having an operator set')
+        elif c in '+*':
+            op = c
         else:
-            raise ValueError
+            raise ValueError(c)
         pos += 1
 
     return ans
 
 
 # 18-1
+equations = get_input(day=18)
 print(sum(parse(equation) for equation in equations))
