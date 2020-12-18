@@ -66,39 +66,3 @@ def parse(equation):
 
 # 18-1
 print(sum(parse(equation) for equation in equations))
-
-
-# 18-2
-def find_end_of_addition(string):
-    i = 0
-    while i < len(string):
-        c = string[i]
-        if c == '(':
-            i += find_close(string[i:])
-        elif c in ')+':
-            return i
-        i += 1
-    return i
-
-
-def add_parens(equation):
-    print('')
-    print(equation)
-    pos = 0
-    while pos < len(equation):
-        c = equation[pos]
-
-        if c == '+':
-            close = find_end_of_addition(equation[pos+1:])  # TODO ook in de haakjes die je tegenkomt moet add_parens draaien
-            print()
-            print(equation)
-            todo_part = f'TODO:[{equation[pos+1:pos+close-2]}]'
-            equation = equation[:pos+1] + '(' + todo_part + ')' + equation[pos+close-2:]
-            pos +=
-            print(equation)
-        pos += 1  # TODO je moet wel over alles heen skippen
-    print(equation)
-    return equation
-
-
-print(sum(parse(add_parens(equation)) for equation in equations))
