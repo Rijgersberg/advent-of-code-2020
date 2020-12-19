@@ -34,7 +34,8 @@ def pattern(n):
 
 
 def n_valid(messages, start):
-    return sum(re.fullmatch(pattern(start), message) is not None for message in messages)
+    c_pattern = re.compile(pattern(start))
+    return sum(re.fullmatch(c_pattern, message) is not None for message in messages)
 
 
 # test-1
