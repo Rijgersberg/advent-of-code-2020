@@ -5,7 +5,7 @@ with open('sessioncookie.txt') as f:
     SESSION_COOKIE = f.read().strip()
 
 
-def get_input(day):
+def get_input(day, as_list=True):
     filepath = Path(f'./input/{day}.txt')
 
     if not filepath.is_file():
@@ -16,4 +16,7 @@ def get_input(day):
             ipt_file.write(inpt)
 
     with open(filepath) as f:
-        return f.read().splitlines()
+        if as_list:
+            return f.read().splitlines()
+        else:
+            return f.read()
