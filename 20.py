@@ -23,10 +23,10 @@ def string_to_array(lines):
 def parse_input(input_):
     tiles = {}
     for tile_str in input_.split('\n\n'):
-        lines = tile_str.splitlines()
-        id = int(re.search(r'\d+', lines[0]).group())
+        id_line, *tile_lines = tile_str.splitlines()
 
-        tile = string_to_array(lines[1:])
+        id = int(re.search(r'\d+', id_line).group())
+        tile = string_to_array(tile_lines)
         tiles[id] = tile
     return tiles
 
@@ -62,10 +62,10 @@ def match(c_pos, candidate, board):
                     fits = np.array_equal(cand[:, -1], neigh[:, -0])
                 elif n_c == c_c - 1 and n_r == c_r:  # neighbor to the left of candidate
                     fits = np.array_equal(cand[:, 0], neigh[:, -1])
-                elif n_c == c_c and n_r == c_r + 1:  # neighbor above candidate
-                    fits = np.array_equal(cand[0, :], neigh[-1, :])
-                elif n_c == c_c and n_r == c_r - 1:  # neighbor below candidate
+                elif n_c == c_c and n_r == c_r + 1:  # neighbor below candidate
                     fits = np.array_equal(cand[-1, :], neigh[0, :])
+                elif n_c == c_c and n_r == c_r - 1:  # neighbor above candidate
+                    fits = np.array_equal(cand[0, :], neigh[-1, :])
                 else:
                     raise ValueError
 
@@ -90,19 +90,19 @@ def solve(tiles):
     queue = deque(id for id in tiles)
     board = {(0, 0): queue.popleft()}
     while queue:
-        candidate = queue.popleft()
+        candidate_id = queue.popleft()
 
         for av_pos in available_poses(board):
             try:
-                cand_transformed = match(av_pos, candidate, board)
-                tiles[candidate] = cand_transformed
-                board[av_pos] = candidate
+                cand_transformed = match(av_pos, candidate_id, board)
+                tiles[candidate_id] = cand_transformed
+                board[av_pos] = candidate_id
                 break
             except MatchError:
                 continue
         else:
             # did not fit anywhere, put in the back of the queue
-            queue.append(candidate)
+            queue.append(candidate_id)
     return board
 
 
@@ -127,9 +127,7 @@ def stitch(tiles, board, L, im_size):
             tile = tiles[board[(min_r + r, min_c + c)]]
 
             R, C = r * im_size, c * im_size
-            # my tile layout coords origin is in bottom left, not top left
-            # quickest fix is to invert first axis of tile before adding it
-            image[R:R+im_size, C:C+im_size] = np.flip(tile[1:-1, 1:-1], 0)
+            image[R:R+im_size, C:C+im_size] = tile[1:-1, 1:-1]
     return image
 
 
