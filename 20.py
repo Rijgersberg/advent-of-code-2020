@@ -139,13 +139,13 @@ def count_seamonsters(orig_image, monster):
             image = np.rot90(orig_image, k=n_rot)
             image = np.flip(image, 1) if flip else image
 
-            L_image, W_image = image.shape
-            L_monster, W_monster = monster.shape
+            im_h, im_w = image.shape
+            mon_h, mon_w = monster.shape
 
-            for i in range(L_image-L_monster):
-                for j in range(W_image-W_monster):
+            for c in range(im_w - mon_w):
+                for r in range(im_h - mon_h):
                     # check if for every 1 in the monster there is a 1 in the image slice
-                    if np.array_equal(monster & image[i:i+L_monster, j:j+W_monster], monster):
+                    if np.array_equal(monster & image[r:r+mon_h, c:c+mon_w], monster):
                         count += 1
     return count
 
