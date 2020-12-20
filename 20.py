@@ -1,8 +1,4 @@
-from collections import defaultdict, Counter, deque
-from dataclasses import dataclass
-from functools import cache
-import heapq
-from itertools import combinations, combinations_with_replacement, groupby, permutations, product, starmap, takewhile
+from collections import deque
 import re
 
 from matplotlib import pyplot as plt
@@ -42,6 +38,7 @@ def available_poses(board):
     available -= set(board.keys())
     return available
 
+
 def neighbors(pos):
     r, c = pos
     yield from [(r+1, c), (r-1, c), (r, c+1), (r, c-1)]
@@ -58,10 +55,6 @@ def match(c_pos, candidate, board):
                 n_id = board[n_pos]
                 neigh = tiles[n_id]
 
-                # if c_pos == (0, 1):
-                #     print([n for n in neighbors(c_pos) if n in board])
-                #     print(f'{c_pos=}, {n_pos=}, {n_id=}, {n_rot=}, {flip=}, {candidate=}, {n_id=})')
-
                 # find out which edge to check
                 c_r, c_c = c_pos
                 n_r, n_c = n_pos
@@ -71,13 +64,10 @@ def match(c_pos, candidate, board):
                     fits = np.array_equal(cand[:, 0], neigh[:, -1])
                 elif n_c == c_c and n_r == c_r + 1:  # neighbor above candidate
                     fits = np.array_equal(cand[0, :], neigh[-1, :])
-                    # if c_pos == (0, 1):
-                    #     print('cand', cand[0, :])
-                    #     print('neigh', neigh[-1, :])
                 elif n_c == c_c and n_r == c_r - 1:  # neighbor below candidate
                     fits = np.array_equal(cand[-1, :], neigh[0, :])
                 else:
-                    raise Exception(f'Wtf iets is gruwelijk mis. {candidate=}, {c_pos=}, {n_pos=}')
+                    raise ValueError
 
                 if not fits:
                     fits_all = False
@@ -86,6 +76,7 @@ def match(c_pos, candidate, board):
                 return cand
     else:
         raise MatchError
+
 
 def edge_points(coords):
     min_r = min(r for r, c in coords)
@@ -100,14 +91,8 @@ def solve(tiles):
     board = {(0, 0): queue.popleft()}
     while queue:
         candidate = queue.popleft()
-        #
-        # print('#' * 80)
-        # print(len(queue))
-        # print(f'{candidate=}')
-        # print(f'{board=}')
 
         for av_pos in available_poses(board):
-            # print(f'{av_pos=}')
             try:
                 cand_transformed = match(av_pos, candidate, board)
                 tiles[candidate] = cand_transformed
@@ -131,29 +116,56 @@ assert board[(min_r, min_c)] * board[(max_r, min_c)] * board[(min_r, max_c)] * b
 # 20-1
 tiles = parse_input(get_input(day=20, as_list=False))
 board = solve(tiles)
-print(board)
 min_r, max_r, min_c, max_c = edge_points(board)
 print(board[(min_r, min_c)] * board[(max_r, min_c)] * board[(min_r, max_c)] * board[(max_r, max_c)])
 
 
-L = 12
-im_size = 8
-image = np.zeros((L*im_size, L*im_size))
-for r in range(L):
-    for c in range(L):
-        tile = tiles[board[(min_r + r, min_c + c)]]
+def stitch(tiles, board, L, im_size):
+    image = np.zeros((L*im_size, L*im_size), dtype=np.int)
+    for r in range(L):
+        for c in range(L):
+            tile = tiles[board[(min_r + r, min_c + c)]]
 
-        R, C = r * im_size, c * im_size
-        image[R:R+im_size, C:C+im_size] = tile[1:-1, 1:-1]
+            R, C = r * im_size, c * im_size
+            # my tile layout coords origin is in bottom left, not top left
+            # quickest fix is to invert first axis of tile before adding it
+            image[R:R+im_size, C:C+im_size] = np.flip(tile[1:-1, 1:-1], 0)
+    return image
 
-plt.imshow(image)
-plt.show()
 
 # 20-2 test
+def count_seamonsters(orig_image, monster):
+    count = 0
+    for n_rot in range(4):
+        for flip in (False, True):
+            image = np.rot90(orig_image, k=n_rot)
+            image = np.flip(image, 1) if flip else image
+
+            L_image, W_image = image.shape
+            L_monster, W_monster = monster.shape
+
+            for i in range(L_image-L_monster):
+                for j in range(W_image-W_monster):
+                    # check if for every 1 in the monster there is a 1 in the image slice
+                    if np.array_equal(monster & image[i:i+L_monster, j:j+W_monster], monster):
+                        count += 1
+    return count
+
 sea_monster = string_to_array('''                  # 
 #    ##    ##    ###
  #  #  #  #  #  #   '''.splitlines())
 with open('input/20-2-test.txt') as f:
-    image = string_to_array(f.read().splitlines())
-plt.imshow(image)
+    test_image = string_to_array(f.read().splitlines())
+plt.imshow(test_image)
 plt.show()
+
+count = count_seamonsters(test_image, sea_monster)
+assert count == 2
+assert test_image.sum() - count * sea_monster.sum() == 273
+
+# 20-2
+puzzle_image = stitch(tiles, board, L=12, im_size=8)
+plt.imshow(puzzle_image)
+plt.show()
+count = count_seamonsters(puzzle_image, sea_monster)
+print(puzzle_image.sum() - count * sea_monster.sum())
