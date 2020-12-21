@@ -1,20 +1,7 @@
-from collections import defaultdict, Counter, deque
+from collections import defaultdict
 from copy import deepcopy
-from dataclasses import dataclass
-from functools import cache
-import heapq
-from itertools import combinations, combinations_with_replacement, groupby, permutations, product, starmap, takewhile
-from pprint import pprint
-import re
-
-import networkx as nx
-from networkx.algorithms.bipartite.matching import maximum_matching
 
 from aoc import get_input
-
-
-class CounterFactualError(ValueError):
-    pass
 
 
 def parse(input_):
@@ -28,16 +15,18 @@ def parse(input_):
         aller_lines.append(aller)
 
     all_ingredients = set(i for ing in ing_lines for i in ing)
-    all_allergens = set(a for aller in aller_lines for a in aller)
+    return ing_lines, aller_lines, all_ingredients
 
+
+def get_constraints(ing_lines, aller_lines, all_ingredients):
     ingredients = defaultdict(lambda: deepcopy(all_ingredients))
-    # allergens = defaultdict(lambda: set(a for aller in aller_lines for a in aller))
-
     for ing_line, aller_line in zip(ing_lines, aller_lines):
         for aller in aller_line:
             ingredients[aller] &= set(ing_line)
+    return ingredients
 
 
+def solve(ingredients):
     solution = {}
     while any(len(possibilities) >= 1 for possibilities in ingredients.values()):
         min_aller, min_ings = min(ingredients.items(), key=lambda x: len(x[1]))
@@ -50,6 +39,13 @@ def parse(input_):
             del ingredients[min_aller]
         else:
             raise ValueError
+    return solution
+
+
+def do(input_):
+    ing_lines, aller_lines, all_ingredients = parse(input_)
+    constraints = get_constraints(ing_lines, aller_lines, all_ingredients)
+    solution = solve(constraints)
 
     no_allergens = all_ingredients - set(solution.values())
     answer = 0
@@ -58,13 +54,14 @@ def parse(input_):
             answer += ing_line.count(no_allergen)
     return solution, answer
 
+
 # 21-1 test
 with open('input/21-1-test.txt') as f:
-    _, answer = parse(f.read().splitlines())
+    _, answer = do(f.read().splitlines())
     assert answer == 5
 
 # 21-1
-solution, answer = parse(get_input(day=21))
+solution, answer = do(get_input(day=21))
 print(answer)
 
 # 21-2
