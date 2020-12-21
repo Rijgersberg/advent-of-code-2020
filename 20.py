@@ -114,7 +114,7 @@ min_r, max_r, min_c, max_c = edge_points(board)
 assert board[(min_r, min_c)] * board[(max_r, min_c)] * board[(min_r, max_c)] * board[(max_r, max_c)] == 20899048083289
 
 # 20-1
-tiles = parse_input(get_input(day=20, as_list=False))
+tiles = parse_input(get_input(day=20, as_list=False).strip())
 board = solve(tiles)
 min_r, max_r, min_c, max_c = edge_points(board)
 print(board[(min_r, min_c)] * board[(max_r, min_c)] * board[(min_r, max_c)] * board[(max_r, max_c)])
