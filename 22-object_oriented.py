@@ -7,10 +7,7 @@ from aoc import get_input
 class RecursiveCombat:
     deck1: tuple[int]
     deck2: tuple[int]
-
-    def __post_init__(self):
-        self.seen = set()
-        self.winner = None
+    winner: int = None
 
     @staticmethod
     def parse(input_):
@@ -20,12 +17,13 @@ class RecursiveCombat:
         return RecursiveCombat(deck1, deck2)
 
     def play(s, recursive=False):
+        seen = set
         while s.deck1 and s.deck2:
             if recursive:
-                if (s.deck1, s.deck2) in s.seen:
+                if (s.deck1, s.deck2) in seen:
                     return 1
                 else:
-                    s.seen.add((s.deck1, s.deck2))
+                    seen.add((s.deck1, s.deck2))
 
             card1, s.deck1 = s.deck1[0], s.deck1[1:]
             card2, s.deck2 = s.deck2[0], s.deck2[1:]
@@ -43,6 +41,7 @@ class RecursiveCombat:
         s.winner = winner
         return winner
 
+    @property
     def score(self):
         winning_deck = self.deck1 if self.winner == 1 else self.deck2
         return sum(i * c for i, c in enumerate(reversed(winning_deck), start=1))
@@ -52,9 +51,9 @@ class RecursiveCombat:
 input_ = get_input(day=22, as_list=False)
 game = RecursiveCombat.parse(input_)
 game.play(recursive=False)
-print(game.score())
+print(game.score)
 
 # 22-2
 game = RecursiveCombat.parse(input_)
 game.play(recursive=True)
-print(game.score())
+print(game.score)
