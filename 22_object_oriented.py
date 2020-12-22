@@ -9,15 +9,15 @@ class RecursiveCombat:
     deck2: tuple[int]
     winner: int = None
 
-    @staticmethod
-    def parse(input_):
+    @classmethod
+    def parse(cls, input_):
         p1, p2 = input_.split('\n\n')
         deck1 = tuple(int(l) for l in p1.splitlines()[1:])
         deck2 = tuple(int(l) for l in p2.splitlines()[1:])
-        return RecursiveCombat(deck1, deck2)
+        return cls(deck1, deck2)
 
     def play(s, recursive=False):
-        seen = set
+        seen = set()
         while s.deck1 and s.deck2:
             if recursive:
                 if (s.deck1, s.deck2) in seen:
@@ -45,6 +45,8 @@ class RecursiveCombat:
 
     @property
     def score(self):
+        if self.winner is None:
+            return None
         winning_deck = self.deck1 if self.winner == 1 else self.deck2
         return sum(i * c for i, c in enumerate(reversed(winning_deck), start=1))
 
