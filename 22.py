@@ -3,8 +3,9 @@ from aoc import get_input
 
 def parse(input_):
     p1, p2 = input_.split('\n\n')
-    return tuple(int(l) for l in p1.splitlines()[1:]), \
-           tuple(int(l) for l in p2.splitlines()[1:])
+    deck1 = tuple(int(l) for l in p1.splitlines()[1:])
+    deck2 = tuple(int(l) for l in p2.splitlines()[1:])
+    return deck1, deck2
 
 
 def play(deck1, deck2, recursive=False):
@@ -12,7 +13,7 @@ def play(deck1, deck2, recursive=False):
     while deck1 and deck2:
         if recursive:
             if (deck1, deck2) in seen:
-                return 1, (deck1, deck2)
+                return 1, None
             else:
                 seen.add((deck1, deck2))
 
@@ -29,11 +30,11 @@ def play(deck1, deck2, recursive=False):
         elif winner == 2:
             deck2 += (card2, card1)
 
-    return 1 if deck1 else 2, deck1 if deck1 else deck2
+    return winner, deck1 if winner == 1 else deck2
 
 
 def score(deck):
-    return sum(i * c for i, c in enumerate(reversed(deck), 1))
+    return sum(i * c for i, c in enumerate(reversed(deck), start=1))
 
 
 # 22-1
