@@ -60,7 +60,7 @@ class Passport:
             return False
 
 
-batchfile = '\n'.join(get_input(day=4)).split('\n\n')
+batchfile = get_input(day=4, as_list=False).split('\n\n')
 
 # 4-1
 print(sum(Passport(entry).has_required_fields() for entry in batchfile))

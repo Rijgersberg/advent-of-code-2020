@@ -2,7 +2,7 @@ from collections import Counter
 
 from aoc import get_input
 
-groups = '\n'.join(get_input(day=6)).split('\n\n')
+groups = get_input(day=6, as_list=False).split('\n\n')
 
 # 6-1
 total = 0
