@@ -21,7 +21,8 @@ class RecursiveCombat:
         while s.deck1 and s.deck2:
             if recursive:
                 if (s.deck1, s.deck2) in seen:
-                    return 1
+                    s.winner = 1
+                    return s
                 else:
                     seen.add((s.deck1, s.deck2))
 
@@ -29,7 +30,8 @@ class RecursiveCombat:
             card2, s.deck2 = s.deck2[0], s.deck2[1:]
 
             if recursive and len(s.deck1) >= card1 and len(s.deck2) >= card2:
-                winner = RecursiveCombat(s.deck1[:card1], s.deck2[:card2]).play(recursive)
+                winner = RecursiveCombat(s.deck1[:card1],
+                                         s.deck2[:card2]).play(recursive).winner
             else:
                 winner = 1 if card1 > card2 else 2
 
@@ -39,7 +41,7 @@ class RecursiveCombat:
                 s.deck2 += (card2, card1)
 
         s.winner = winner
-        return winner
+        return s
 
     @property
     def score(self):
@@ -49,11 +51,7 @@ class RecursiveCombat:
 
 # 22-1
 input_ = get_input(day=22, as_list=False)
-game = RecursiveCombat.parse(input_)
-game.play(recursive=False)
-print(game.score)
+print(RecursiveCombat.parse(input_).play().score)
 
 # 22-2
-game = RecursiveCombat.parse(input_)
-game.play(recursive=True)
-print(game.score)
+print(RecursiveCombat.parse(input_).play(recursive=True).score)
