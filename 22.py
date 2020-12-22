@@ -2,9 +2,9 @@ from aoc import get_input
 
 
 def parse(input_):
-    p1_str, p2_str = input_.split('\n\n')
-    return tuple(int(l) for l in p1_str.splitlines()[1:]), \
-           tuple(int(l) for l in p2_str.splitlines()[1:])
+    p1, p2 = input_.split('\n\n')
+    return tuple(int(l) for l in p1.splitlines()[1:]), \
+           tuple(int(l) for l in p2.splitlines()[1:])
 
 
 def play(deck1, deck2, recursive=False):
@@ -16,18 +16,18 @@ def play(deck1, deck2, recursive=False):
             else:
                 seen.add((deck1, deck2))
 
-        c1, deck1 = deck1[0], deck1[1:]
-        c2, deck2 = deck2[0], deck2[1:]
+        card1, deck1 = deck1[0], deck1[1:]
+        card2, deck2 = deck2[0], deck2[1:]
 
-        if recursive and len(deck1) >= c1 and len(deck2) >= c2:
-            winner, _ = play(deck1[:c1], deck2[:c2], recursive)
+        if recursive and len(deck1) >= card1 and len(deck2) >= card2:
+            winner, _ = play(deck1[:card1], deck2[:card2], recursive)
         else:
-            winner = 1 if c1 > c2 else 2
+            winner = 1 if card1 > card2 else 2
 
         if winner == 1:
-            deck1 = (*deck1, c1, c2)
+            deck1 += (card1, card2)
         elif winner == 2:
-            deck2 = (*deck2, c2, c1)
+            deck2 += (card2, card1)
 
     return 1 if deck1 else 2, deck1 if deck1 else deck2
 
