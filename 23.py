@@ -35,12 +35,11 @@ def play(next_, start_cup, moves):
 
 
 def linked_list_to_sequence(next_, start_at=1, max_len=None):
-    if max_len is None:
-        max_len = len(next_) - 2
+    end = max_len - 1 if max_len is not None else len(next_) - 2
 
     cups = [start_at]
     prev = start_at
-    for _ in range(max_len):
+    for _ in range(end):
         prev = next_[prev]
         cups.append(prev)
     return cups
@@ -63,5 +62,5 @@ clockwise = [int(c) for c in '643719258'] + list(range(10, 1_000_000 + 1))
 
 result = play(linked_list(clockwise), start_cup=clockwise[0], moves=10_000_000)
 
-c1, c2 = linked_list_to_sequence(result, start_at=1)[1:3]
+_, c1, c2 = linked_list_to_sequence(result, start_at=1, max_len=3)
 print(f'{c1=}, {c2=}, {c1 * c2}')
