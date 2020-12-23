@@ -35,11 +35,12 @@ def play(next_, start_cup, moves):
 
 
 def linked_list_to_sequence(next_, start_at=1, max_len=None):
-    end = max_len - 1 if max_len is not None else len(next_) - 2
+    if max_len is None:
+        max_len = len(next_) - 1
 
     cups = [start_at]
     prev = start_at
-    for _ in range(end):
+    for _ in range(max_len - 1):
         prev = next_[prev]
         cups.append(prev)
     return cups
