@@ -7,13 +7,14 @@ DIRECTIONS = {'e': 2, 'se': 1 - 2j, 'sw': -1 - 2j, 'w': -2, 'nw': -1 + 2j, 'ne':
 
 
 def parse(string):
-    if string == '':
-        return []
-
-    if string[0] in DIRECTIONS:
-        return [DIRECTIONS[string[0]]] + parse(string[1:])
-    else:
-        return [DIRECTIONS[string[:2]]] + parse(string[2:])
+    i = 0
+    while i < len(string):
+        if string[i] in DIRECTIONS:
+            yield DIRECTIONS[string[i]]
+            i += 1
+        else:
+            yield DIRECTIONS[string[i:i+2]]
+            i += 2
 
 
 def flip(positions):
