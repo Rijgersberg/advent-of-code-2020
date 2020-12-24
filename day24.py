@@ -6,27 +6,14 @@ from aoc import get_input
 DIRECTIONS = {'e': 2, 'se': 1 - 2j, 'sw': -1 - 2j, 'w': -2, 'nw': -1 + 2j, 'ne': 1 + 2j}
 
 
-class TraversalError(ValueError):
-    pass
-
-
 def parse(string):
     if string == '':
         return []
 
-    if string[0] not in DIRECTIONS:
-        if string[:2] in DIRECTIONS:
-            return [DIRECTIONS[string[:2]]] + parse(string[2:])
-        else:
-            raise TraversalError(f'Next two letters of string "{string}" not in DIRECTIONS')
+    if string[0] in DIRECTIONS:
+        return [DIRECTIONS[string[0]]] + parse(string[1:])
     else:
-        if string[:2] not in DIRECTIONS:
-            return [DIRECTIONS[string[0]]] + parse(string[1:])
-        else:  # both the next letter by itself and the next two letters are valid instructions
-            try:
-                return [DIRECTIONS[string[0]]] + parse(string[1:])
-            except TraversalError:
-                return [DIRECTIONS[string[:2]]] + parse(string[2:])
+        return [DIRECTIONS[string[:2]]] + parse(string[2:])
 
 
 def flip(positions):
